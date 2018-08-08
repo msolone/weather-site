@@ -1,7 +1,37 @@
 let lat = ''
 let long = ''
 
+const getLastLocation = () => {
+  lastLocation = localStorage.getItem('zip')
+  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${lastLocation},us&units=imperial&appid=45b731a8be13e595d4c9cca601298e9a`)
+  .then(resp => {
+  if (resp.status === 200) {
+    return resp.json()
 
+  } else {
+    displayErrorMessage(resp)
+  }
+})
+.then(json => {
+  // Updates location name
+  document.querySelector('.weather-display3').textContent = ''
+  document.querySelector('.location-display3').textContent = "Location: " + json.name
+  // Adds icon for local weather 
+  document.querySelector('.weather-icon3').style.display = 'flex'
+  weatherIcon = json.weather[0].icon
+  document.querySelector('.weather-icon3').setAttribute('src', `http://openweathermap.org/img/w/${weatherIcon}.png`)
+  // Adds weather description
+  let newLi = document.createElement('li')
+  newLi.textContent = json.weather[0].description.toUpperCase()
+  document.querySelector('.weather-display3').appendChild(newLi)
+  // Adds temp in fahrenheit
+  newLi = document.createElement('li')
+  newLi.textContent = Math.ceil(json.main.temp) + "°F"
+  document.querySelector('.weather-display3').appendChild(newLi)
+
+
+})
+}
 
 const getLocation = () => {
   if (navigator.geolocation) {
@@ -37,52 +67,16 @@ const showPosition = (position) => {
     document.querySelector('.weather-icon2').setAttribute('src', `http://openweathermap.org/img/w/${weatherIcon}.png`)
     // Adds weather description
     let newLi = document.createElement('li')
-    newLi.textContent = json.weather[0].description
+    newLi.textContent = json.weather[0].description.toUpperCase()
     document.querySelector('.weather-display2').appendChild(newLi)
     // Adds temp in fahrenheit
     newLi = document.createElement('li')
-    newLi.textContent = json.main.temp + " Degree Fahrenheit"
+    newLi.textContent = Math.ceil(json.main.temp)+ "°F"
     document.querySelector('.weather-display2').appendChild(newLi)
 
     })
   // }
 }
-
-const getLastLocation = () => {
-  lastLocation = localStorage.getItem('zip')
-  fetch(`https://api.openweathermap.org/data/2.5/weather?q=${lastLocation},us&units=imperial&appid=45b731a8be13e595d4c9cca601298e9a`)
-  .then(resp => {
-  if (resp.status === 200) {
-    return resp.json()
-
-  } else {
-    displayErrorMessage(resp)
-  }
-})
-.then(json => {
-  // Updates location name
-  document.querySelector('.weather-display3').textContent = ''
-  document.querySelector('.location-display3').textContent = "Location: " + json.name
-  // Adds icon for local weather 
-  document.querySelector('.weather-icon3').style.display = 'flex'
-  weatherIcon = json.weather[0].icon
-  document.querySelector('.weather-icon3').setAttribute('src', `http://openweathermap.org/img/w/${weatherIcon}.png`)
-  // Adds weather description
-  let newLi = document.createElement('li')
-  newLi.textContent = json.weather[0].description
-  document.querySelector('.weather-display3').appendChild(newLi)
-  // Adds temp in fahrenheit
-  newLi = document.createElement('li')
-  newLi.textContent = json.main.temp + " Degree Fahrenheit"
-  document.querySelector('.weather-display3').appendChild(newLi)
-
-
-})
-}
-
-
-
-
 
 
 const searchWeather = () => {
@@ -107,11 +101,11 @@ const searchWeather = () => {
       document.querySelector('.weather-icon').setAttribute('src', `http://openweathermap.org/img/w/${weatherIcon}.png`)
       // Adds weather description
       let newLi = document.createElement('li')
-      newLi.textContent = json.weather[0].description
+      newLi.textContent = json.weather[0].description.toUpperCase()
       document.querySelector('.weather-display').appendChild(newLi)
       // Adds temp in fahrenheit
       newLi = document.createElement('li')
-      newLi.textContent = json.main.temp + " Degree Fahrenheit"
+      newLi.textContent = Math.ceil(json.main.temp) + "°F"
       document.querySelector('.weather-display').appendChild(newLi)
 
 
