@@ -1,7 +1,7 @@
 let lat = ''
 let long = ''
 
-class weatherAPI {
+class WeatherApi {
   constructor(searchInput) {
     this.searchInput = searchInput
     this.searchURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInput},us&units=imperial&appid=45b731a8be13e595d4c9cca601298e9a`
@@ -9,6 +9,7 @@ class weatherAPI {
   getWeatherData () {
     fetch(this.searchURL)
       .then(resp => {
+        console.log('fetch success')
         if (resp.status === 200) {
           return resp.json()
   
@@ -17,26 +18,53 @@ class weatherAPI {
         }
       })
       .then(json => {
-      // Updates location name
-      document.querySelector('.weather-display').textContent = ''
-      document.querySelector('.location-display').textContent = "Location: " + json.name
-      // Adds icon for local weather 
-      document.querySelector('.weather-icon').style.display = 'flex'
-      weatherIcon = json.weather[0].icon
-      document.querySelector('.weather-icon').setAttribute('src', `http://openweathermap.org/img/w/${weatherIcon}.png`)
-      // Adds weather description
-      let newLi = document.createElement('li')
-      newLi.textContent = json.weather[0].description.toUpperCase()
-      document.querySelector('.weather-display').appendChild(newLi)
-      // Adds temp in fahrenheit
-      newLi = document.createElement('li')
-      newLi.textContent = Math.ceil(json.main.temp) + "°F"
-      document.querySelector('.weather-display').appendChild(newLi)
+        const icon = new AddIcon(json)
+        icon.displayIcon()
 
-  
+        parent = document.querySelector('.weather-display')
+        const condition = new AddDescriptionLi(json)
+        parent.appendChild(condition.displayListResult())
+        const temp = new AddTempLi(json)
+        parent.appendChild(temp.displayListResult())
+ 
       })
     }
   }
+
+  class AddDescriptionLi {
+    constructor(content) {
+      this.content = content
+    }
+    displayListResult() {
+   let newLi = document.createElement('li')
+   newLi.textContent = this.content.weather[0].description.toUpperCase()
+   return newLi
+    }
+  }
+
+  class AddTempLi {
+    constructor(content) {
+      this.content = content
+    }
+    displayListResult() {
+   let newLi = document.createElement('li')
+   newLi.textContent = Math.ceil(this.content.main.temp) + "°F"
+   return newLi
+    }
+  }
+
+  class AddIcon {
+    constructor(image) {
+      this.image = image
+    }
+    displayIcon() {
+      document.querySelector('.weather-icon').style.display = 'flex'
+      weatherIcon = this.image.weather[0].icon
+      document.querySelector('.weather-icon').setAttribute('src', `http://openweathermap.org/img/w/${weatherIcon}.png`)
+    }
+  }
+
+  
 
 
 
@@ -121,7 +149,7 @@ const showPosition = (position) => {
 
 const searchWeather = () => {
   input = document.querySelector('.input-bar').value
-  const weatherSearch = new weatherAPI(input)
+  const weatherSearch = new WeatherApi(input)
   weatherSearch.getWeatherData()
 }
 
