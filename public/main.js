@@ -1,10 +1,10 @@
 let lat = ''
 let long = ''
 
-class WeatherApi {
-  constructor(searchInput) {
-    this.searchInput = searchInput
-    this.searchURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInput},us&units=imperial&appid=45b731a8be13e595d4c9cca601298e9a`
+  class WeatherApi {
+    constructor(searchInput) {
+      this.searchInput = searchInput
+      this.searchURL = `https://api.openweathermap.org/data/2.5/weather?q=${searchInput},us&units=imperial&appid=45b731a8be13e595d4c9cca601298e9a`
   }
   getWeatherData () {
     fetch(this.searchURL)
@@ -17,10 +17,12 @@ class WeatherApi {
           displayErrorMessage(resp)
         }
       })
-      .then(json => {
+      .then(json => { 
+        document.querySelector('.weather-display').textContent = ''
+        document.querySelector('.location-display').textContent = "Location: " + json.name
         const icon = new AddIcon(json)
         icon.displayIcon()
-
+        document.querySelector('.weather-display').textContent = ''
         parent = document.querySelector('.weather-display')
         const condition = new AddDescriptionLi(json)
         parent.appendChild(condition.displayListResult())
@@ -63,12 +65,6 @@ class WeatherApi {
       document.querySelector('.weather-icon').setAttribute('src', `http://openweathermap.org/img/w/${weatherIcon}.png`)
     }
   }
-
-  
-
-
-
-
 
 const getLastLocation = () => {
   lastLocation = localStorage.getItem('zip')
